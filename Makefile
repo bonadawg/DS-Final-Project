@@ -1,5 +1,5 @@
-CC = gcc 
-CC_FLAGS=-lpanel -lncurses -g -Wall -std=c89
+CC = g++
+CC_FLAGS=-lpanel -lncurses -g -Wall -std=c++14
  
 # File names
 EXEC = hag
