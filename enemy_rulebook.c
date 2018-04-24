@@ -6,6 +6,9 @@
 #include "map.h"
 #include "main.h"
 #include "gui.h"
+#include "queue.h"
+#include <limits.h>
+#include <stdio.h>
 
 static enemy_template_t rulebook[100];
 int book_length = 0;
@@ -152,6 +155,16 @@ int enemy_index_snek() {
     return snek;
 }
 
+queue_t *pathfind(enemy_t *e, int y, int x, int range, int *xn, int *yn){
+	queue_t *q = queue_create();
+	int visited[range][range];
+	for(int m=0; m<range; m++){
+		for(int n=0; n<range; n++){
+			visited[m][n] = 0;
+		}
+	}
+	return q;
+}
 
 void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
     
@@ -183,38 +196,39 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
 
         if ((e->pic & A_CHARTEXT) == 'H') {
             if (tick % 24 == 0) {
-                    enemy_template_t en = get_rulebook()[snek];
-                    add_action("The old hag summons a dangerous snek!");
-                    enemy_t *n = enemy_add(0, snek, en.pic, en.base_hp, e->y, e->x+xdiff, en.base_sight_range, en.base_strength, en.base_exp, "dangerous snek");
-                    map_line(e->y, e->x, n->y, n->x);
+            	enemy_template_t en = get_rulebook()[snek];
+                add_action("The old hag summons a dangerous snek!");
+                enemy_t *n = enemy_add(0, snek, en.pic, en.base_hp, e->y, e->x+xdiff, en.base_sight_range, en.base_strength, en.base_exp, "dangerous snek");
+                map_line(e->y, e->x, n->y, n->x);
             }
         }
 
         /* movement */
         /* if enemy is in range of the player */
         if(abs(ydiff) < e->sight_range && abs(xdiff) < e->sight_range){
-                if(ydiff < 0){
-                    yn++;
-                } else if (ydiff > 0){
-                    yn--;
-                } else{
+        	/*if(ydiff < 0){
+                yn++;
+            } else if (ydiff > 0){
+                yn--;
+            } else{
 
-                }
-                if (xdiff < 0){
-                    xn++;
-                } else if (xdiff > 0){
-                    xn--;
-                } else {
+            }
+            if (xdiff < 0){
+                xn++;
+            } else if (xdiff > 0){
+                xn--;
+            }*/
+			queue_t *q = pathfind(e, y, x, e->sight_range, &xn, &yn);
 
-                }
-                if(map_get(yn, xn) == '.' && !enemy_at(yn,xn)){
-                    e->y = yn;
-                    e->x = xn;
-                } else if (map_get(yn, e->x) == '.' && !enemy_at(yn,e->x)){
-                    e->y = yn;
-                } else if (map_get(e->y, xn) == '.' && !enemy_at(e->y,xn)){
-                    e->x = xn;
-                }
+            if(map_get(yn, xn) == '.' && !enemy_at(yn,xn)){
+                e->y = yn;
+                e->x = xn;
+            } else if (map_get(yn, e->x) == '.' && !enemy_at(yn,e->x)){
+                e->y = yn;
+            } else if (map_get(e->y, xn) == '.' && !enemy_at(e->y,xn)){
+                e->x = xn;
+            }
+			free(q);
         }
     }
    
