@@ -1,3 +1,6 @@
+//queue.h, contains all function declarations and structs for queue.c and implementation for other programs
+//James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale), Justin Doney (jdoney)
+
 #ifndef QUEUE_H
 #define QUEUE_H
     #include <ncurses.h>
@@ -6,8 +9,8 @@
 	typedef struct tile {
 		int cost;
 		struct tile *next;
-		int xPos;
-		int yPos;
+		int x;
+		int y;
 		int xPrev;
 		int yPrev;
 	} tile_t;

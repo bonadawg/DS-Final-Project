@@ -155,12 +155,57 @@ int enemy_index_snek() {
     return snek;
 }
 
-queue_t *pathfind(enemy_t *e, int y, int x, int range, int *xn, int *yn){
+queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
+	int range = e->sight_range*2-1;
 	queue_t *q = queue_create();
-	int visited[range][range];
+	int prevX[range][range];
+	int prevY[range][range];
+	int sX, sY;
+	int pPos = range/2;
+
 	for(int m=0; m<range; m++){
 		for(int n=0; n<range; n++){
-			visited[m][n] = 0;
+			prevX[m][n] = -1;
+			prevY[m][n] = -1;
+		}
+	}
+
+	sX = pPos + (x - e->x);
+	sY = pPos + (y - e->y);
+	queue_push(q, 0, pPos, pPos, pPos, pPos);
+	
+	while(!queue_empty(q)){
+		tile_t *t = queue_top(q);
+		queue_pop(q);
+		int currX = t->x;
+		int currY = t->y;
+		//if((prevX[currX][currY] != -1))
+		//	continue;
+		prevX[currX][currY] = t->xPrev;
+		prevY[currX][currY] = t->yPrev;
+
+
+		if(currX == sX && currY == sY){
+			char s[80];
+			sprintf(s, "%d %d | %d %d\n", currX, currY, prevX[currX][currY], prevY[currX][currY]);
+			add_action(s);
+
+			*xn += (sY - prevY[currX][currY]);
+			*yn += (sX - prevX[currX][currY]);
+			return q;
+		}
+		
+		if((currX-1 >= 0) && (prevX[currX-1][currY] == -1) && (map_get(currY-sY+y, currX-1-sX+x) == '.')){
+			queue_push(q, t->cost+1, currX-1, currY, currX, currY);
+		}
+		if((currY-1 >= 0) && (prevX[currX][currY-1] == -1) && (map_get(currY-1-sY+y, currX-sX+x) == '.')){
+			queue_push(q, t->cost+1, currX, currY-1, currX, currY);
+		}
+		if((currX+1 < range) && (prevX[currX+1][currY] == -1) && (map_get(currY-sY+y, currX+1-sX+x) == '.')){
+			queue_push(q, t->cost+1, currX+1, currY, currX, currY);
+		}
+		if((currY+1 < range) && (prevX[currX][currY+1] == -1) && (map_get(currY+1-sY+y, currX-sX+x) == '.')){
+			queue_push(q, t->cost+1, currX, currY+1, currX, currY);
 		}
 	}
 	return q;
@@ -218,7 +263,17 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
             } else if (xdiff > 0){
                 xn--;
             }*/
-			queue_t *q = pathfind(e, y, x, e->sight_range, &xn, &yn);
+
+			/*queue_t *q0 = queue_create();
+			queue_push(q0, 5, x, y, x, y);
+			queue_push(q0, 1, x, y, x, y);
+			tile_t *t = queue_top(q0);*/
+
+			queue_t *q = pathfind(e, y, x, &xn, &yn); 
+
+			/*char s[80];
+			sprintf(s, "%d %d %d %d\n", e->x, e->y, xn, yn);
+			add_action(s);*/
 
             if(map_get(yn, xn) == '.' && !enemy_at(yn,xn)){
                 e->y = yn;
