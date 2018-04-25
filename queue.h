@@ -1,5 +1,5 @@
-//queue.h, contains all function declarations and structs for queue.c and implementation for other programs
-//James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale), Justin Doney (jdoney)
+/*queue.h, contains all function declarations and structs for queue.c and implementation for other programs*/
+/*James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale), Justin Doney (jdoney)*/
 
 #ifndef QUEUE_H
 #define QUEUE_H
@@ -16,7 +16,7 @@
 	} tile_t;
 
     typedef struct queue {
-		struct tile *head;
+		tile_t *head;
 		int length;
     } queue_t;
 

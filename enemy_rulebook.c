@@ -158,54 +158,68 @@ int enemy_index_snek() {
 queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 	int range = e->sight_range*2-1;
 	queue_t *q = queue_create();
-	int prevX[range][range];
-	int prevY[range][range];
+	int prevC[range][range];
+	int prevR[range][range];
 	int sX, sY;
-	int pPos = range/2;
+	int ePos = range/2;
 
 	for(int m=0; m<range; m++){
 		for(int n=0; n<range; n++){
-			prevX[m][n] = -1;
-			prevY[m][n] = -1;
+			prevC[m][n] = -1;
+			prevR[m][n] = -1;
 		}
 	}
 
-	sX = pPos + (x - e->x);
-	sY = pPos + (y - e->y);
-	queue_push(q, 0, pPos, pPos, pPos, pPos);
+	sX = ePos + (x - e->x);
+	sY = ePos + (y - e->y);
+	queue_push(q, 0, sX, sY, -1, -1);
 	
 	while(!queue_empty(q)){
 		tile_t *t = queue_top(q);
+		int currC = t->x;
+		int currR = t->y;
+		int tCost = t->cost;
+		if((prevR[currR][currC] != -1) || tCost > range){
+			queue_pop(q);
+			continue;
+		}
+		prevC[currR][currC] = t->xPrev;
+		prevR[currR][currC] = t->yPrev;
+
 		queue_pop(q);
-		int currX = t->x;
-		int currY = t->y;
-		//if((prevX[currX][currY] != -1))
-		//	continue;
-		prevX[currX][currY] = t->xPrev;
-		prevY[currX][currY] = t->yPrev;
-
-
-		if(currX == sX && currY == sY){
+		
 			char s[80];
-			sprintf(s, "%d %d | %d %d\n", currX, currY, prevX[currX][currY], prevY[currX][currY]);
+			sprintf(s, "%d %d | %d | %d\n", currR, currC, ePos, prevC[currR][currC]);
 			add_action(s);
 
-			*xn += (sY - prevY[currX][currY]);
-			*yn += (sX - prevX[currX][currY]);
+
+		if(abs(currC-ePos) <= 1 && abs(currR-ePos) <= 1){
+			/*char s[80];
+			sprintf(s, "%d %d | %d %d | %d %d\n", currX, currY, prevX[currX][currY], prevY[currX][currY], sX - prevX[sX][sY], sY-prevY[sX][sY]);
+			sprintf(s, "Movement: %d\n", tCost);
+			add_action(s);*/
+
+			/*
+			*xn += (ePos - prevC[ePos][ePos]);
+			*yn += (ePos - prevR[ePos][ePos]);*/
 			return q;
 		}
-		
-		if((currX-1 >= 0) && (prevX[currX-1][currY] == -1) && (map_get(currY-sY+y, currX-1-sX+x) == '.')){
-			queue_push(q, t->cost+1, currX-1, currY, currX, currY);
+			
+		if((currR-1 >= 0) && (prevC[currR-1][currR] == -1) && (map_get(currR-1-sY+y, currC-sX+x) != '#')){
+			if(tCost < range)
+				queue_push(q, tCost+1, currC, currR-1, currC, currR);
 		}
-		if((currY-1 >= 0) && (prevX[currX][currY-1] == -1) && (map_get(currY-1-sY+y, currX-sX+x) == '.')){
-			queue_push(q, t->cost+1, currX, currY-1, currX, currY);
+		if((currC-1 >= 0) && (prevC[currR][currC-1] == -1) && (map_get(currR-sY+y, currC-1-sX+x) != '#')){
+			if(tCost < range)
+				queue_push(q, tCost+1, currC-1, currR, currC, currR);
 		}
-		if((currX+1 < range) && (prevX[currX+1][currY] == -1) && (map_get(currY-sY+y, currX+1-sX+x) == '.')){
-			queue_push(q, t->cost+1, currX+1, currY, currX, currY);
+		if((currR+1 < range) && (prevC[currR+1][currC] == -1) && (map_get(currR+1-sY+y, currC-sX+x) != '#')){
+			if(tCost < range)
+				queue_push(q, tCost+1, currC, currR+1, currC, currR);
 		}
-		if((currY+1 < range) && (prevX[currX][currY+1] == -1) && (map_get(currY+1-sY+y, currX-sX+x) == '.')){
-			queue_push(q, t->cost+1, currX, currY+1, currX, currY);
+		if((currC+1 < range) && (prevC[currR][currC+1] == -1) && (map_get(currR-sY+y, currC+1-sX+x) != '#')){
+			if(tCost < range)
+				queue_push(q, tCost+1, currC+1, currR, currC, currR);
 		}
 	}
 	return q;
@@ -255,8 +269,6 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
                 yn++;
             } else if (ydiff > 0){
                 yn--;
-            } else{
-
             }
             if (xdiff < 0){
                 xn++;
@@ -283,7 +295,7 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
             } else if (map_get(e->y, xn) == '.' && !enemy_at(e->y,xn)){
                 e->x = xn;
             }
-			free(q);
+			queue_clear(q);
         }
     }
    
