@@ -179,18 +179,15 @@ queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 		int currC = t->x;
 		int currR = t->y;
 		int tCost = t->cost;
-		if((prevR[currR][currC] != -1) || tCost > range*3/2){
+		if(prevR[currR][currC] != -1){
 			queue_pop(q);
 			continue;
 		}
 		prevC[currR][currC] = t->xPrev;
 		prevR[currR][currC] = t->yPrev;
-
 		queue_pop(q);
-		
 
-
-		if(abs(currC-ePos) <= 1 && abs(currR-ePos) <= 1){
+		if(currC == ePos && currR == ePos){
 			/*char s[80];
 			sprintf(s, "%d %d | %d %d | %c\n", e->y, e->x, *yn + currR - prevR[currR][currC], *xn + currC - prevC[currR][currC], map_get(*yn + currR - prevR[currR][currC], *xn + currC - prevC[currR][currC]));
 			add_action(s);*/
@@ -198,43 +195,48 @@ queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 			sprintf(s, "%d %d | %d %d | %d %d\n", currX, currY, prevX[currX][currY], prevY[currX][currY], sX - prevX[sX][sY], sY-prevY[sX][sY]);
 			sprintf(s, "Movement: %d\n", tCost);
 			add_action(s);*/
-			if(map_get(e->y + currR - prevR[currR][currC], e->x + currC - prevC[currR][currC]) == '#')
+			if(map_get(e->y + currR - prevR[currR][currC], e->x + currC - prevC[currR][currC]) == '#'){
+				queue_pop(q);
 				continue;
+			}
 
 			*xn -= (currC - prevC[currR][currC]);
 			*yn -= (currR - prevR[currR][currC]);
+			/*char s[80];
+			sprintf(s, "%d %d | %d %d || %d %d || %d %d | %d %d\n", y, x, e->y-1, e->x-1, *yn, *xn, e->y-(ePos-currR), e->x-(ePos-currC), e->y - (currR - prevR[currR][currC]), e->x - (currC - prevC[currR][currC]));
+			add_action(s);*/
 			return q;
 		}
 			
-		if((currR-1 >= 0 && currC-1 >= 0) && (prevC[currR-1][currC-1] == -1) && map_get(e->y - (ePos - currR-1), e->x - (ePos - currC-1)) != '#'){
+		if((currR-1 >= 0 && currC-1 >= 0) && (prevC[currR-1][currC-1] == -1) && map_get(e->y - (ePos - (currR-1)), e->x - (ePos - (currC-1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC-1, currR-1, currC, currR);
 		}
-		if((currR-1 >= 0 && currC+1 < range) && (prevC[currR-1][currC+1] == -1) && map_get(e->y - (ePos - currR-1), e->x - (ePos - currC+1)) != '#'){
+		if((currR-1 >= 0 && currC+1 < range) && (prevC[currR-1][currC+1] == -1) && map_get(e->y - (ePos - (currR-1)), e->x - (ePos - (currC+1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC+1, currR-1, currC, currR);
 		}
-		if((currR+1 < range && currC-1 >= 0) && (prevC[currR+1][currC-1] == -1) && map_get(e->y - (ePos - currR+1), e->x - (ePos - currC-1)) != '#'){
+		if((currR+1 < range && currC-1 >= 0) && (prevC[currR+1][currC-1] == -1) && map_get(e->y - (ePos - (currR+1)), e->x - (ePos - (currC-1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC-1, currR+1, currC, currR);
 		}
-		if((currR+1 < range && currC+1 < range) && (prevC[currR+1][currC+1] == -1) && map_get(e->y - (ePos - currR+1), e->x - (ePos - currC+1)) != '#'){
+		if((currR+1 < range && currC+1 < range) && (prevC[currR+1][currC+1] == -1) && map_get(e->y - (ePos - (currR+1)), e->x - (ePos - (currC+1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC+1, currR+1, currC, currR);
 		}
-		if((currR-1 >= 0) && (prevC[currR-1][currC] == -1) && map_get(e->y - (ePos - currR-1), e->x - (ePos - currC)) != '#'){
+		if((currR-1 >= 0) && (prevC[currR-1][currC] == -1) && map_get(e->y - (ePos - (currR-1)), e->x - (ePos - currC)) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC, currR-1, currC, currR);
 		}
-		if((currC-1 >= 0) && (prevC[currR][currC-1] == -1) && map_get(e->y - (ePos - currR), e->x - (ePos - currC-1)) != '#'){
+		if((currC-1 >= 0) && (prevC[currR][currC-1] == -1) && map_get(e->y - (ePos - currR), e->x - (ePos - (currC-1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC-1, currR, currC, currR);
 		}
-		if((currR+1 < range) && (prevC[currR+1][currC] == -1) && map_get(e->y - (ePos - currR+1), e->x - (ePos - currC)) != '#'){
+		if((currR+1 < range) && (prevC[currR+1][currC] == -1) && map_get(e->y - (ePos - (currR+1)), e->x - (ePos - currC)) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC, currR+1, currC, currR);
 		}
-		if((currC+1 < range) && (prevC[currR][currC+1] == -1) && map_get(e->y - (ePos - currR), e->x - (ePos - currC+1)) != '#'){
+		if((currC+1 < range) && (prevC[currR][currC+1] == -1) && map_get(e->y - (ePos - currR), e->x - (ePos - (currC+1))) == '.'){
 			if(tCost < range)
 				queue_push(q, tCost+1, currC+1, currR, currC, currR);
 		}
