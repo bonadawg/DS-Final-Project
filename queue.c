@@ -45,6 +45,7 @@ queue_t *queue_push(queue_t *q, int c, int x0, int y0, int xP, int yP){
 				q->length++;
 				return q;
 			}
+			curr = curr->next;
 		}
 		curr->next = t;
 		q->length++;
