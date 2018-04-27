@@ -160,11 +160,11 @@ queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 	queue_t *q = queue_create();
 	int prevC[range][range];
 	int prevR[range][range];
-	int sX, sY;
+	int sX, sY, m, n;
 	int ePos = range/2;
 
-	for(int m=0; m<range; m++){
-		for(int n=0; n<range; n++){
+	for(m=0; m<range; m++){
+		for(n=0; n<range; n++){
 			prevC[m][n] = -1;
 			prevR[m][n] = -1;
 		}
@@ -188,23 +188,11 @@ queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 		q = queue_pop(q);
 
 		if(currC == ePos && currR == ePos){
-			char s[BUFSIZ];
-			sprintf(s, "%c %c %c    %c  %c    %c %c %c \n\n", map_get(e->y - (ePos - (currR-1)), e->x - (ePos - (currC-1))), map_get(e->y - (ePos - (currR-1)), e->x - (ePos - currC)), map_get(e->y - (ePos - (currR-1)), e->x - (ePos - (currC+1))), map_get(e->y - (ePos - currR), e->x - (ePos - (currC-1))), map_get(e->y - (ePos - currR), e->x - (ePos - (currC+1))), map_get(e->y - (ePos - (currR+1)), e->x - (ePos - (currC-1))), map_get(e->y - (ePos - (currR+1)), e->x - (ePos - currC)), map_get(e->y - (ePos - (currR+1)), e->x - (ePos - (currC+1))));
-			add_action(s);
-			/*char s[80];
-			sprintf(s, "%d %d | %d %d | %d %d\n", currX, currY, prevX[currX][currY], prevY[currX][currY], sX - prevX[sX][sY], sY-prevY[sX][sY]);
-			sprintf(s, "Movement: %d\n", tCost);
-			add_action(s);*/
 			if(map_get(e->y - (currR - prevR[currR][currC]), e->x - (currC - prevC[currR][currC])) == '#'){
-				q = queue_pop(q);
 				continue;
 			}
-
 			*xn -= (currC - prevC[currR][currC]);
 			*yn -= (currR - prevR[currR][currC]);
-			char d[80];
-			sprintf(d, "%d %d | %d %d || %d %d\n", y, x, e->y, e->x, e->y - (currR - prevR[currR][currC]), e->x - (currC - prevC[currR][currC]));
-			add_action(d);
 			return q;
 		}
 			
