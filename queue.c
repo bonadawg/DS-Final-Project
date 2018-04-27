@@ -39,7 +39,7 @@ queue_t *queue_push(queue_t *q, int c, int x0, int y0, int xP, int yP){
 			return q;
 		}
 		while(curr->next){
-			if(t->cost <= curr->next->cost){
+			if(t->cost < curr->next->cost){
 				t->next = curr->next;
 				curr->next = t;
 				q->length++;
@@ -53,11 +53,12 @@ queue_t *queue_push(queue_t *q, int c, int x0, int y0, int xP, int yP){
 	return q;
 }
 
-void queue_pop(queue_t *q){
+queue_t *queue_pop(struct queue *q){
 	tile_t *temp = q->head;
 	q->head = q->head->next;
 	free(temp);
 	q->length--;
+	return q;
 }
 
 tile_t *queue_top(queue_t *q){

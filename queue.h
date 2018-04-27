@@ -22,7 +22,7 @@
 
 	struct queue *queue_create();
 	struct queue *queue_push(struct queue *q, int c, int x, int y, int xP, int yP);
-	void queue_pop(struct queue *q);
+	struct queue *queue_pop(struct queue *q);
 	struct tile *queue_top(struct queue *q);
 	int queue_empty(struct queue *q);
 	void queue_clear(struct queue *q);
