@@ -1,5 +1,5 @@
 /*queue.c, full implementation of a priority queue to use in order to implement dijkstra's algorithm for enemy pathfinding*/
-/*James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale), Justin Doney (jdoney)*/
+/*James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale)*/
 
 #include "queue.h"
 #include <stdlib.h>
@@ -53,12 +53,11 @@ queue_t *queue_push(queue_t *q, int c, int x0, int y0, int xP, int yP){
 	return q;
 }
 
-queue_t *queue_pop(struct queue *q){
+void queue_pop(struct queue *q){
 	tile_t *temp = q->head;
 	q->head = q->head->next;
 	free(temp);
 	q->length--;
-	return q;
 }
 
 tile_t *queue_top(queue_t *q){

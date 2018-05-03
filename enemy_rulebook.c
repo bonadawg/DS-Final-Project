@@ -155,6 +155,7 @@ int enemy_index_snek() {
     return snek;
 }
 
+/*implements dijkstra's algorithm in order to improve enemy pathfinding as compared to the old, linear pathfinding*/
 queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 	int range = e->sight_range*2-1;
 	queue_t *q = queue_create();
@@ -180,12 +181,12 @@ queue_t *pathfind(enemy_t *e, int y, int x, int *xn, int *yn){
 		int currR = t->y;
 		int tCost = t->cost;
 		if(prevR[currR][currC] != -1){
-			q = queue_pop(q);
+			queue_pop(q);
 			continue;
 		}
 		prevC[currR][currC] = t->xPrev;
 		prevR[currR][currC] = t->yPrev;
-		q = queue_pop(q);
+		queue_pop(q);
 
 		if(currC == ePos && currR == ePos){
 			if(map_get(e->y - (currR - prevR[currR][currC]), e->x - (currC - prevC[currR][currC])) == '#'){
@@ -272,29 +273,10 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
         /* movement */
         /* if enemy is in range of the player */
         if(abs(ydiff) < e->sight_range && abs(xdiff) < e->sight_range){
-        	/*if(ydiff < 0){
-                yn++;
-            } else if (ydiff > 0){
-                yn--;
-            }
-            if (xdiff < 0){
-                xn++;
-            } else if (xdiff > 0){
-                xn--;
-            }*/
 
-			/*queue_t *q0 = queue_create();
-			queue_push(q0, 5, x, y, x, y);
-			queue_push(q0, 1, x, y, x, y);
-			tile_t *t = queue_top(q0);*/
+			queue_t *q = pathfind(e, y, x, &xn, &yn); /*return the queue in order to make freeing it easier*/
 
-			queue_t *q = pathfind(e, y, x, &xn, &yn); 
-
-			/*char s[80];
-			sprintf(s, "%d %d %d %d\n", e->x, e->y, xn, yn);
-			add_action(s);*/
-
-            if(map_get(yn, xn) == '.' && !enemy_at(yn,xn)){
+            if(map_get(yn, xn) == '.' && !enemy_at(yn,xn)){ /*moves the enemy after ensuring it can move to that space*/
                 e->y = yn;
                 e->x = xn;
             } else if (map_get(yn, e->x) == '.' && !enemy_at(yn,e->x)){
@@ -302,7 +284,7 @@ void enemy_take_turn(enemy_t *e, WINDOW *win, int y, int x){
             } else if (map_get(e->y, xn) == '.' && !enemy_at(e->y,xn)){
                 e->x = xn;
             }
-			queue_clear(q);
+			queue_clear(q); /*frees the queue and its tiles*/
         }
     }
    
