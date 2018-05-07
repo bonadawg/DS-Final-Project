@@ -33,7 +33,7 @@ void generate_enemies(){
 	/* kobold */
 	rulebook[book_length].name = "kobold";
 	rulebook[book_length].pic = 'k'|A_BOLD| COLORS_RED;
-	rulebook[book_length].base_hp = 50;
+	rulebook[book_length].base_hp = 40;
 	rulebook[book_length].base_sight_range = 15;
 	rulebook[book_length].base_strength = 10;
 	rulebook[book_length].base_exp = 15;
