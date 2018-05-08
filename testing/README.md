@@ -2,7 +2,7 @@
 *Testing README, has data to show the memory and timing information for the pathfinding implementation in the dungeon crawler*
 
         Linear       |     Dijkstra's
- ----------------------------------------
+ --------------------|-------------------
         0.000001     |     0.001000
         0.000001     |     0.001015
         0.000001     |     0.000985
