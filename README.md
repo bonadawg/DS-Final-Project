@@ -2,6 +2,13 @@ James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale)
 
 *NOTE: This code has been adapted from code borrowed, with permission, from Ryan Michalec. The queue.c and queue.h files, as well as the pathfind() function were all written by this group, but the underlying hag interface was created by Ryan before our modifications. If you want to see the code before any changes were made, the original version of it is stored in the source branch of this repository.*
 
+
+Compiling
+----------
+
+In order to compile, ensure that lncurses and C89 are installed on the machine which compiles the program. Lncurses is the gui interface which is used to run hag, so it is necessary to have it installed, and the program is compiled in C89, so it should also have that. The student machines automatically have both lncurses and C89 installed, so compiling should not be an issue on those machines, however on a personal machine there might be some graphical issues if they are not installed.
+
+
 Testing
 --------
 
