@@ -1,8 +1,8 @@
-*James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale)
-Testing README, has data to show the memory and timing information for the pathfinding implementation in the dungeon crawler*
+*James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale)*
+*Testing README, has data to show the memory and timing information for the pathfinding implementation in the dungeon crawler*
 
         Linear       |     Dijkstra's
------------------------------------------
+ ----------------------------------------
         0.000001     |     0.001000
         0.000001     |     0.001015
         0.000001     |     0.000985
@@ -68,7 +68,9 @@ Despite the fact that the Dijkstra pathfinding took much longer than the linear 
 ==23031== Using Valgrind-3.8.1 and LibVEX; rerun with -h for copyright info
 ==23031== Command: ./test
 ==23031== 
+
 Time Elapsed: 0.032014
+
 ==23031== 
 ==23031== HEAP SUMMARY:
 ==23031==     in use at exit: 0 bytes in 0 blocks
