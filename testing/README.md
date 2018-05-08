@@ -1,4 +1,5 @@
 *James Bonadonna (jbonadon), Ana Lamberto (alamber2), Sean Michalec (smichale)*
+
 *Testing README, has data to show the memory and timing information for the pathfinding implementation in the dungeon crawler*
 
         Linear       |     Dijkstra's
