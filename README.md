@@ -17,12 +17,3 @@ In order to perform testing on this project, first cd into the testing directory
 There is a README file in the testing folder which has some baseline values for the average running times of linear vs the Dijkstra's Algorithm searching. Due to its speed, there is no time test for the linear search in the testing folder, as it most often takes between 0 and 2 nanoseconds to compute. The README in the testing folder also contains an example of valgrind --leak-check=full being run on the test program. 
 
 If valgrind is run on hag itself, there will be bytes lost but still reachable. This is because the source code does not free the memory which it allocates. The testing folder contains both the queue class and the pathfind() function compiled in the test executable, which both displays the run-time of the algorithm and shows the memory usage of the code we wrote.
-
-Individual Contributions
--------------------------
-
-James Bonadonna (jbonadon): wrote queue.c, queue.h, pathfind(), and test scripts, helped on the README and presentation, performed the walkthrough videos
-
-Ana Lamberto (alamber2): primary debugger for pathfind(), primary writer of the presentation, edited the code walkthrough, helped with README
-
-Sean Michalec (smichale): primary debugger for queue.c, primary writer of the README, helped with the presentation, helped debug test scripts
